@@ -4,6 +4,7 @@
 
 import pygame
 import cell
+import time
 
 # -------color variables---------
 color_black = [0, 0, 0]
@@ -56,14 +57,32 @@ for j in range(int((y_axis_screen / 50) - 2)):
     for i in range((int(x_axis_screen / 50) - 2)):
         create_cell = cell.Cell(cell_x, cell_y)
         grid.append(create_cell)
+        pygame.draw.circle(screen, color_red, (cell_x, cell_y), 1)
+        pygame.display.update()
         cell_x = cell_x + 50
+        time.sleep(.1)
+
+
+def draw_cell(dc1, dc2, d_cell=[]):
+    time.sleep(.1)
+    if d_cell[0]:  # top
+        pygame.draw.line(screen, color_white, (dc1, dc2), (dc1 + cell_width, dc2), 1)
+        pygame.display.update()
+    if d_cell[1]:  # left
+        pygame.draw.line(screen, color_white, (dc1, dc2), (dc1, dc2 + cell_width), 1)
+        pygame.display.update()
+    if d_cell[2]:  # right
+        pygame.draw.line(screen, color_white, (dc1 + cell_width, dc2), (dc1 + cell_width, dc2 + cell_width), 1)
+        pygame.display.update()
+    if d_cell[3]:  # bottom
+        pygame.draw.line(screen, color_white, (dc1, dc2 + cell_width), (dc1 + cell_width, dc2 + cell_width), 1)
+        pygame.display.update()
+
 
 for k in grid:
     k.print_cell()
-
-maze_boarder = pygame.draw.line(screen, color_red, (first_grid_x, first_grid_y), (first_grid_x, first_grid_y + 400),
-                                line_width)
-pygame.display.update()
+    k.print_walls()
+    draw_cell(k.x, k.y, k.walls)
 
 # maze generator logic
 while running:
