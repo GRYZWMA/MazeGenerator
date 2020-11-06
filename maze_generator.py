@@ -48,10 +48,21 @@ first_grid_y = (y_axis_screen * .2) / 2
 line_width = 1
 border_width = 1
 
-print(first_grid_x)
-print(first_grid_y)
+cell_x = 50
+cell_y = 0
+for j in range(int((y_axis_screen / 50) - 2)):
+    cell_x = 50
+    cell_y = cell_y + 50
+    for i in range((int(x_axis_screen / 50) - 2)):
+        create_cell = cell.Cell(cell_x, cell_y)
+        grid.append(create_cell)
+        cell_x = cell_x + 50
 
-maze_boarder = pygame.draw.line(screen, color_red, (first_grid_x, first_grid_y), (first_grid_x, first_grid_y + 400), line_width)
+for k in grid:
+    k.print_cell()
+
+maze_boarder = pygame.draw.line(screen, color_red, (first_grid_x, first_grid_y), (first_grid_x, first_grid_y + 400),
+                                line_width)
 pygame.display.update()
 
 # maze generator logic

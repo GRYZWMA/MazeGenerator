@@ -1,9 +1,9 @@
 # cell class
 class Cell:
 
-    def __init__(self, i, j):
-        self.i = i
-        self.j = j
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
 
     def print_cell(self):
-        print("Cell is:(" + str(self.i) + "," + str(self.j) + ")")
+        print("Cell is:(" + str(self.x) + "," + str(self.y) + ")")
