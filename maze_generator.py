@@ -5,6 +5,7 @@
 import pygame
 import cell
 import time
+import random
 
 # -------color variables---------
 color_black = [0, 0, 0]
@@ -24,7 +25,10 @@ running = True
 cell_width = 50
 cols = x_axis_screen / cell_width
 rows = y_axis_screen / cell_width
+grid_points = []
 grid = []
+stack = []
+visited = []
 
 # initialize pygame screen/window
 pygame.display.init()
@@ -56,15 +60,16 @@ for j in range(int((y_axis_screen / 50) - 2)):
     cell_y = cell_y + 50
     for i in range((int(x_axis_screen / 50) - 2)):
         create_cell = cell.Cell(cell_x, cell_y)
-        grid.append(create_cell)
+        grid_points.append(create_cell)
+        grid.append((create_cell.x, create_cell.y))
         pygame.draw.circle(screen, color_red, (cell_x, cell_y), 1)
         pygame.display.update()
         cell_x = cell_x + 50
-        time.sleep(.1)
+        # time.sleep(.1)
 
 
 def draw_cell(dc1, dc2, d_cell=[]):
-    time.sleep(.1)
+    # time.sleep(.1)
     if d_cell[0]:  # top
         pygame.draw.line(screen, color_white, (dc1, dc2), (dc1 + cell_width, dc2), 1)
         pygame.display.update()
@@ -79,10 +84,83 @@ def draw_cell(dc1, dc2, d_cell=[]):
         pygame.display.update()
 
 
-for k in grid:
+def starting_cell(x, y):
+    pygame.draw.rect(screen, color_blue, (x + 1, y + 1, cell_width - 2, cell_width - 2), 0)  # draw a single width cell
+    pygame.display.update()
+
+
+def draw_right(x, y):
+    pygame.draw.rect(screen, color_purple, (x + 1, y + 1, (cell_width * 2)-1, cell_width - 1), 0)
+    pygame.display.update()
+
+
+def draw_left(x, y):
+    pygame.draw.rect(screen, color_purple, (x - cell_width + 1, y + 1, (cell_width * 2 - 1), cell_width - 1), 0)
+    pygame.display.update()
+
+
+def draw_up(x, y):
+    pygame.draw.rect(screen, color_purple, (x + 1, y - cell_width + 1, cell_width - 1, (cell_width * 2) - 1), 0)
+    pygame.display.update()
+
+
+def draw_down(x, y):
+    pygame.draw.rect(screen, color_purple, (x + 1, y + 1, cell_width - 1, (cell_width * 2) - 1), 0)
+    pygame.display.update()
+
+
+def remove_walls(x, y):
+    print(grid)
+    starting_cell(x, y)
+    stack.append((x, y))
+    visited.append((x, y))
+    while len(stack) > 0:
+        print(str(x) + "," + str(y))
+        print(len(stack))
+        time.sleep(.07)
+        cell_list = []
+        print(str(x + cell_width) + "," + str(y))
+        if (x + cell_width, y) not in visited and (x + cell_width, y) in grid:
+            cell_list.append("right")
+        if (x - cell_width, y) not in visited and (x - cell_width, y) in grid:
+            cell_list.append("left")
+        if (x, y + cell_width) not in visited and (x, y + cell_width) in grid:
+            cell_list.append("down")
+        if (x, y - cell_width) not in visited and (x, y - cell_width) in grid:
+            cell_list.append("up")
+        if len(cell_list) > 0:
+            chosen_cell = (random.choice(cell_list))
+            print("here")
+            if chosen_cell == "right":
+                draw_right(x, y)
+                x = x + cell_width
+                visited.append((x, y))
+                stack.append((x, y))
+            elif chosen_cell == "left":
+                draw_left(x, y)
+                x = x - cell_width
+                visited.append((x, y))
+                stack.append((x, y))
+            elif chosen_cell == "up":
+                draw_up(x, y)
+                y = y - cell_width
+                visited.append((x, y))
+                stack.append((x, y))
+            elif chosen_cell == "down":
+                draw_down(x, y)
+                y = y + cell_width
+                visited.append((x, y))
+                stack.append((x, y))
+            else:
+                x, y = stack.pop()
+
+
+for k in grid_points:
     k.print_cell()
-    k.print_walls()
+    # k.print_walls()
     draw_cell(k.x, k.y, k.walls)
+
+remove_walls(50, 50)
 
 # maze generator logic
 while running:
