@@ -35,8 +35,8 @@ pygame.display.init()
 screen_info = pygame.display.Info()
 x_axis_screen = screen_info.current_w - 100
 y_axis_screen = screen_info.current_h - 100
-x_axis_screen = 500
-y_axis_screen = 500
+x_axis_screen = 1000
+y_axis_screen = 1000
 flags = 0
 clock = pygame.time.Clock()
 fps_cap = 120
@@ -48,8 +48,8 @@ program_icon = pygame.image.load('Maze.png')
 pygame.display.set_icon(program_icon)
 
 # create initial grid in middle of screen
-first_grid_x = (x_axis_screen * .2) / 2
-first_grid_y = (y_axis_screen * .2) / 2
+first_grid_x = int((x_axis_screen * .2) / 2)
+first_grid_y = int((y_axis_screen * .2) / 2)
 line_width = 1
 border_width = 1
 
@@ -90,7 +90,7 @@ def starting_cell(x, y):
 
 
 def draw_right(x, y):
-    pygame.draw.rect(screen, color_purple, (x + 1, y + 1, (cell_width * 2)-1, cell_width - 1), 0)
+    pygame.draw.rect(screen, color_purple, (x + 1, y + 1, (cell_width * 2) - 1, cell_width - 1), 0)
     pygame.display.update()
 
 
@@ -109,7 +109,12 @@ def draw_down(x, y):
     pygame.display.update()
 
 
-def remove_walls(x, y):
+def cell_reset(x, y):
+    pygame.draw.rect(screen, color_purple, (x + 1, y + 1, cell_width - 2, cell_width - 2), 0)
+    pygame.display.update()
+
+
+def draw_maze(x, y):
     print(grid)
     starting_cell(x, y)
     stack.append((x, y))
@@ -117,7 +122,7 @@ def remove_walls(x, y):
     while len(stack) > 0:
         print(str(x) + "," + str(y))
         print(len(stack))
-        time.sleep(.07)
+        time.sleep(.1)
         cell_list = []
         print(str(x + cell_width) + "," + str(y))
         if (x + cell_width, y) not in visited and (x + cell_width, y) in grid:
@@ -151,8 +156,11 @@ def remove_walls(x, y):
                 y = y + cell_width
                 visited.append((x, y))
                 stack.append((x, y))
-            else:
-                x, y = stack.pop()
+        else:
+            x, y = stack.pop()
+            starting_cell(x, y)
+            time.sleep(.1)
+            cell_reset(x, y)
 
 
 for k in grid_points:
@@ -160,7 +168,11 @@ for k in grid_points:
     # k.print_walls()
     draw_cell(k.x, k.y, k.walls)
 
-remove_walls(50, 50)
+first_grid_x = int((x_axis_screen * .2) / 2)
+first_grid_y = int((y_axis_screen * .2) / 2)
+print("grid x" + str(first_grid_x))
+print("grid y" + str(first_grid_y))
+draw_maze(50, 50)
 
 # maze generator logic
 while running:
